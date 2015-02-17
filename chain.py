@@ -1,5 +1,6 @@
 from multiprocessing import Pool
 import copy
+import functools
 from collections import defaultdict
 
 class Chainable(object):
@@ -16,7 +17,8 @@ class Chainable(object):
 
 class Map(Chainable):
     def run(self, inputs):
-        return self.pool.map(self._map, inputs)
+        mapped_key_values = self.pool.map(self._map, inputs)
+        return functools.reduce(lambda l1,l2:l1+l2, mapped_key_values)
 
     def _map(self, input_object):
         raise NotImplementedError
