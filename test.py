@@ -1,25 +1,23 @@
 import unittest
 import chain
+import numpy as np
+import matrix
 
 class Square(chain.Map):
-    def _map(self, key_value):
-        key, value = key_value
+    def _map(self, key, value):
         return [(key, value**2)]
 
 class Add(chain.Reduce):
-    def _reduce(self, key_value):
-        key, value = key_value
+    def _reduce(self, key, value):
         return (key, sum(value))
 
 class Tokenize(chain.Map):
-    def _map(self, key_value):
-        key, value = key_value
+    def _map(self, key, value):
         tokens = value.split(' ')
         return [(t,1) for t in tokens]
 
 class Count(chain.Reduce):
-    def _reduce(self, key_value):
-        key,value = key_value
+    def _reduce(self, key, value):
         return (key, sum(value))
 
 class ChainTest(unittest.TestCase):
@@ -36,3 +34,12 @@ class ChainTest(unittest.TestCase):
         test_output = chain.run_map_reduce(inputs, 4, [(Tokenize,Count)])
         print(test_output)
         assert dict(test_output) == expected_output_dict
+
+@unittest.skip("Matrix module not yet implemented")
+class MatrixTest(unittest.TestCase):
+    def test_matrix_multiply(self):
+        random_matrix = np.random.poisson(10,(3,3))
+        inputs = [('L', random_matrix), ('R', random_matrix)]
+        expected_output = [(None, random_matrix*random_matrix)]
+        test_output =  chain.run_map_reduce(inputs, 4, [matrix.DistributedMultiply])
+        assert expected_output == test_output

@@ -17,17 +17,17 @@ class Chainable(object):
 
 class Map(Chainable):
     def run(self, inputs):
-        mapped_key_values = self.pool.map(self._map, inputs)
+        mapped_key_values = self.pool.starmap(self._map, inputs)
         return functools.reduce(lambda l1,l2:l1+l2, mapped_key_values)
 
-    def _map(self, input_object):
+    def _map(self, key, value):
         raise NotImplementedError
 
 class Reduce(Chainable):
     def run(self, key_value_lists):
-        return self.pool.map(self._reduce, key_value_lists)
+        return self.pool.starmap(self._reduce, key_value_lists)
 
-    def _reduce(self, key_value):
+    def _reduce(self, key, value):
         raise NotImplementedError
 
 class Sort(Chainable):
