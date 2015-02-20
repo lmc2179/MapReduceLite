@@ -37,9 +37,9 @@ class Sort(Chainable):
             output[k].append(v)
         return output.items()
 
-def run_map_reduce(data, number_of_inputs, mappers, reducers):
+def run_map_reduce(data, number_of_inputs, map_reduce_pairs):
     data = copy.deepcopy(data)
-    for mapper, reducer in zip(mappers, reducers):
+    for mapper, reducer in map_reduce_pairs:
         mapped_data = mapper(number_of_inputs).run(data)
         sorted_data = Sort(number_of_inputs).run(mapped_data)
         data = reducer(number_of_inputs).run(sorted_data)
